@@ -55,7 +55,6 @@ void heikinAshi(){
    if(barreContate > 0) 
        barreContate--;
    int pos = Bars - barreContate - 1;
-   Print("pos ha: ", pos);
    while(pos >= 0){
        haOpen = (apertura[pos+1] + chiusura[pos+1]) / 2;
        haClose = (Open[pos] + High[pos] + Low[pos] + Close[pos]) / 4;
@@ -82,7 +81,6 @@ void vwma(){
    
    if(pos < LOOKBACK) pos = LOOKBACK;
    
-   Print("pos vwma: ",pos);
    //calcolo inziale, non eliminare
    for(i = 1; i < LOOKBACK; i++, pos--){
       //(double) casting per evitare possibili perdite di dati
