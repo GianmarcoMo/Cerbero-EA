@@ -6,7 +6,7 @@
 #property copyright "Rodolfo Giuliana"
 #property link      "//"
 #property version   "2.00"
-
+#property strict
 //INPUT UTENTE
 extern double TakeProfit =0;
 extern double StopLoss =0;
@@ -15,6 +15,7 @@ extern int LOOKBACK = 66;
 
 //---- buffers heikin ashi
 double minimo[3000], massimo[3000], apertura[3000], chiusura[3000];
+
 
 //----- buffers indicatori
 double ma[3000], ma1[3000], ma2[3000], ma3[3000], ma4[3000];
@@ -31,11 +32,16 @@ bool longB= false;
 double TakeProfitCalcolato=0 , StopLossCalcolato =0;
 //------------------------------------------
 //------------------------------------------
+void OnInit(void){
+   IndicatorDigits(Digits);
+}
+
 void OnTick(){
    barreContate = IndicatorCounted();
    heikinAshi();
    
    vwma(); //ma
+   //Print("Ma: ", ma[0]);
    rma(); //ma1
    sma(); //ma2
    wma(); //ma3
@@ -50,16 +56,18 @@ void OnTick(){
 //----------------------------
 //---------- metodo per disegnare l'heikin ashi
 void heikinAshi(){
-   double haOpen, haHigh, haLow, haClose;
+   double haOpen=0.0, haHigh=0.0, haLow=0.0, haClose=0.0;
    
    if(barreContate > 0) 
        barreContate--;
    int pos = Bars - barreContate - 1;
-   while(pos >= 0){
-       haOpen = (apertura[pos+1] + chiusura[pos+1]) / 2;
-       haClose = (Open[pos] + High[pos] + Low[pos] + Close[pos]) / 4;
-       haHigh = MathMax(High[pos], MathMax(haOpen, haClose));
-       haLow = MathMin(Low[pos], MathMin(haOpen, haClose));
+   while(pos >= 0){      
+       haOpen = (apertura[pos+1] + chiusura[pos+1])/2;
+       Print("haOpen: ", haOpen);
+       haClose = NormalizeDouble((iOpen(Symbol(),Period(),pos) + iHigh(Symbol(), Period(), pos) +
+                                 iLow(Symbol(), Period(), pos) + iClose(Symbol(),Period(),pos)) / 4,Digits);
+       haHigh = MathMax(NormalizeDouble(iHigh(Symbol(), Period(), pos),Digits), MathMax(haOpen, haClose));
+       haLow = MathMin(NormalizeDouble(iLow(Symbol(), Period(), pos),Digits), MathMin(haOpen, haClose));
        if(haOpen  < haClose){
            minimo[pos] = haLow;
            massimo[pos] = haHigh;
@@ -84,16 +92,16 @@ void vwma(){
    //calcolo inziale, non eliminare
    for(i = 1; i < LOOKBACK; i++, pos--){
       //(double) casting per evitare possibili perdite di dati
-      vol +=(double) Volume[pos];
-      sum += chiusura[pos] * Volume[pos];
+      vol +=NormalizeDouble(iVolume(Symbol(),Period(),pos),Digits);
+      sum += NormalizeDouble(chiusura[pos] * iVolume(Symbol(),Period(),pos),Digits);
    }
    
    while(pos >= 0){
-      vol +=(double) Volume[pos];
-      sum += chiusura[pos] * Volume[pos];
+      vol +=NormalizeDouble(iVolume(Symbol(),Period(),pos),Digits);
+      sum += NormalizeDouble(chiusura[pos] * iVolume(Symbol(),Period(),pos),Digits);
       ma[pos] = sum/vol;
-	   sum -=(double) chiusura[pos + LOOKBACK - 1] * Volume[pos + LOOKBACK - 1];
-	   vol -=(double) Volume[pos + LOOKBACK - 1];
+	   sum -=NormalizeDouble(chiusura[pos + LOOKBACK - 1] * iVolume(Symbol(),Period(),pos + LOOKBACK - 1),Digits);
+	   vol -=NormalizeDouble(iVolume(Symbol(),Period(), pos+LOOKBACK-1), Digits);
  	   pos--;
    }
 }
@@ -110,9 +118,9 @@ void rma(){
     
     while(pos >= 0){
      if (pos == Bars - 2){
-      ma1[pos]=iMA(NULL, 0, LOOKBACK, 0, MODE_SMA, 0, pos);
+      ma1[pos]=NormalizeDouble(iMA(NULL, 0, LOOKBACK, 0, MODE_SMA, 0, pos), Digits);
      }else{
-      ma1[pos]=(iMA(NULL, 0, 1, 0, MODE_SMA, 0, pos) - ma1[pos + 1]) * k + ma1[pos+1];
+      ma1[pos]=NormalizeDouble((iMA(NULL, 0, 1, 0, MODE_SMA, 0, pos) - ma1[pos + 1]) * k + ma1[pos+1], Digits);
      }
      pos--;
     } 
@@ -155,7 +163,7 @@ void ema(){
 void wma(){
    int pos = Bars - barreContate - 1;
    while(pos >= 0){
-      ma3[pos] = iMA(NULL, 0, LOOKBACK, 0, MODE_LWMA, 0, pos);
+      ma3[pos] = NormalizeDouble(iMA(NULL, 0, LOOKBACK, 0, MODE_LWMA, 0, pos),Digits);
       pos--;
    }
 }
