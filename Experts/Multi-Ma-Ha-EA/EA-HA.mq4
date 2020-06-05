@@ -41,7 +41,6 @@ void OnTick(){
    heikinAshi();
    
    vwma(); //ma
-   //Print("Ma: ", ma[0]);
    rma(); //ma1
    sma(); //ma2
    wma(); //ma3
@@ -63,7 +62,6 @@ void heikinAshi(){
    int pos = Bars - barreContate - 1;
    while(pos >= 0){      
        haOpen = (apertura[pos+1] + chiusura[pos+1])/2;
-       Print("haOpen: ", haOpen);
        haClose = NormalizeDouble((iOpen(Symbol(),Period(),pos) + iHigh(Symbol(), Period(), pos) +
                                  iLow(Symbol(), Period(), pos) + iClose(Symbol(),Period(),pos)) / 4,Digits);
        haHigh = MathMax(NormalizeDouble(iHigh(Symbol(), Period(), pos),Digits), MathMax(haOpen, haClose));
