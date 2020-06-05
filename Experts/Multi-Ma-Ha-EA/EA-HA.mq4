@@ -19,7 +19,7 @@ double minimo[3000], massimo[3000], apertura[3000], chiusura[3000];
 //----- buffers indicatori
 double ma[3000], ma1[3000], ma2[3000], ma3[3000], ma4[3000];
 
-//----
+//------------
 int barreContate=0;
 //Ordini aperti
 int ordiniAperti =0;
@@ -46,8 +46,8 @@ void OnTick(){
    controlloPosizioneLong(ordiniAperti);
    controlloPosizioneShort(ordiniAperti);
 }
+//--------------------------------------------------------------------
 //+------------------------------------------------------------------+
-//----------------------------
 //---------- metodo per disegnare l'heikin ashi
 void heikinAshi(){
    double haOpen, haHigh, haLow, haClose;
@@ -162,20 +162,20 @@ void wma(){
 //-------------------------------------------------------------------
 //--------------------------------------------------------------------
 //Metodo per effettuare una sola volta il resize degli array
-void reSizeArrayHA(){
+/*void reSizeArrayHA(){
    ArrayResize(minimo,1);
    ArrayResize(massimo,1);
    ArrayResize(chiusura,1);
    ArrayResize(apertura,1);
-}
+}*/
 //Metodo per effettuare UNA SOLA VOLTA il resize degli array per gli indicatori
-void reSizeArrayIndicatori(){
+/*void reSizeArrayIndicatori(){
    ArrayResize(ma,LOOKBACK);
    ArrayResize(ma1,1);
    ArrayResize(ma2,LOOKBACK);
    ArrayResize(ma3,1);
    ArrayResize(ma4,1);
-}
+}*/
 //-------------------------------------------------------------------
 //--------------------------------------------------------------------
 void controlloPosizioneLong(int ordiniTotali){
