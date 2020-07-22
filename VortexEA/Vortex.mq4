@@ -45,7 +45,7 @@ double SumTR[3000];
 //SMMA
 double smma;
 
-int barreContate = IndicatorCounted();
+int barreContate = 0;
 
 //Orari per stop e start EA
 int orarioInizio = 0, orarioFine = 0, minutoInizio = 0, minutoFine = 0;
@@ -56,8 +56,14 @@ bool operazioneMattina = false;
 
 //+------------------------------------------------------------------+
 int OnInit(){
-  sistemaOrario(2);
-  return(INIT_SUCCEEDED);
+   barreContate = 0;
+   orarioInizio = 0; orarioFine = 0; minutoInizio = 0; minutoFine = 0;
+   TakeProfitCalcolato=0 ; StopLossCalcolato =0;
+   operazioneMattina = false;
+   operazioneLong = false;
+   operazioneShort = false;
+   sistemaOrario();
+   return(INIT_SUCCEEDED);
 }
 //+------------------------------------------------------------------+
 void OnTick(){
@@ -119,10 +125,10 @@ bool controlloOrario(){
   return stato;
 }
 //-------------------
-void sistemaOrario(int differenza){
+void sistemaOrario(){
    orarioInizio = 0; orarioFine = 0; minutoInizio = 0; minutoFine = 0;
-   orarioInizio = orarioInizioInput - differenza;
-   orarioFine = orarioFineInput - differenza;
+   orarioInizio = orarioInizioInput - 2;
+   orarioFine = orarioFineInput - 2;
    minutoInizio = minutoInizioInput;
    minutoFine = minutoFineInput;
 }
@@ -230,8 +236,10 @@ void Vortex(){
   }
 
   for(i = 0; i < pos; i++){
-    PlusVI[i] = SumPlusVM[i] / SumTR[i];
-    MinusVI[i] = SumMinusVM[i] / SumTR[i];
+    if(SumTR[i]!=0){
+       PlusVI[i] = SumPlusVM[i] / SumTR[i];
+       MinusVI[i] = SumMinusVM[i] / SumTR[i];
+    }
   }
 }
 //------------------
@@ -281,7 +289,7 @@ void controlloPosizioneLong(){
 void controlloPosizioneShort(){
    int ticket;
    //CONTROLLO POSIZIONE SHORT
-   if(smma < Bid && PlusVI[1]   < MinusVI[1]){
+   if(smma < Bid && PlusVI[1] < MinusVI[1]){
       //Permette di non aprire l'operazione appena si avvia Cerbero
       if(!operazioneMattina){
          operazioneMattina = true;
@@ -296,11 +304,11 @@ void controlloPosizioneShort(){
          setTakeAndStop(Bid,2);
          //Ordine 'stabilito' ma non inviato.
          ticket = OrderSend(Symbol(), OP_SELL, Lots, Bid, 0, StopLossCalcolato,
-                       TakeProfitCalcolato, "Cerbero SELL", 0, 0, Red);
+                       TakeProfitCalcolato, "Vortex SELL", 0, 0, Red);
          if(ticket > 0){
             //Apre operazione SELL
             if(OrderSelect(ticket,SELECT_BY_TICKET,MODE_TRADES))
-               SendNotification("Cerbero SELL @" + DoubleToString(OrderOpenPrice(),2));
+               SendNotification("Vortex SELL @" + DoubleToString(OrderOpenPrice(),2));
             //Indica che e' stata aperta operazione short
             operazioneShort = true;
             //indica che non ci sono operazioni buy aperte
