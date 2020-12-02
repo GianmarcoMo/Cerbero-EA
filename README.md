@@ -1,8 +1,6 @@
 # Cerbero
 Repository per gestione dell'expert advisor Cerbero(Ex Multi-Ma)
 
-**Trello Link:** [Clicca qui](https://trello.com/b/Z82zaCFa/multi-ma-strategy)
-
 # Seleziona branch
 Al centro pagina troverai dei pulsanti, devi cliccare il primo a sinistra che si chiama **Branch: master**.
 Clicca su branch e seleziona la versione.
