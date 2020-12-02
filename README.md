@@ -1,2 +1,2 @@
-# Multi-Ma
-Repository per la strategia Multi-Ma
+# CerberoEA
+CerberoEA con controlli online inseriti in un database
