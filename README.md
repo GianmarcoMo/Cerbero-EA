@@ -1,5 +1,5 @@
-# Multi-Ma
-Repository per la strategia Multi-Ma
+# Cerbero
+Repository per gestione dell'expert advisor Cerbero(Ex Multi-Ma)
 
 **Trello Link:** [Clicca qui](https://trello.com/b/Z82zaCFa/multi-ma-strategy)
 
